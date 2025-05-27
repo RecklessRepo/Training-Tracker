@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MarineNet Training Status</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h2>Training Requirements</h2>
+  <div id="user-grade">Loading grade...</div>
+
+  <div style="margin-bottom: 10px; text-align: center;">
+    <label for="filter-select"><strong>Filter:</strong></label>
+    <select id="filter-select">
+      <option value="all">All</option>
+      <option value="done">&#x2705; Done</option>
+      <option value="notdone">&#x274C; Not Done</option>
+      <option value="expiring">Expiring Soon</option>
+    </select>
+  </div>
+
+  <div id="training-status">Loading training data...</div>
+  <script src="popup.js"></script>
+</body>
+</html>
