@@ -1,4 +1,3 @@
-
 const trainingRequirements = [
   {
     "training": "Level I AT Awareness Training",
@@ -84,8 +83,9 @@ function calculateDeadline(frequency, completedDate) {
     } else if (frequency === "FY") {
       deadline = new Date(now.getMonth() < 9 ? now.getFullYear() : now.getFullYear() + 1, 8, 30);
     } else if (frequency === "Every 12 Months") {
+      // No completion date yet; just show a placeholder future date so "Incomplete" items have some deadline.
       deadline = new Date(now);
-      deadline.setDate(deadline.getDate() + 30);  // Placeholder for warning window
+      deadline.setDate(deadline.getDate() + 30);
     } else if (frequency === "Every 2 CY") {
       deadline = new Date(now.getFullYear(), 11, 31);
     } else if (frequency === "Every 2 FY") {
@@ -137,22 +137,24 @@ chrome.storage.local.get(["completedCourses", "userGrade"], (data) => {
     const valid = course && isCourseValid(course, req.frequency);
 
     const div = document.createElement("div");
-    
     div.className = "course-item";
+
     const daysUntilDeadline = deadline ? Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24)) : null;
     if (daysUntilDeadline !== null && daysUntilDeadline <= 45 && valid) {
-        div.classList.add("expiring");
+      div.classList.add("expiring");
     }
-    
 
-    let status = "&#x274C; Incomplete";
+    let status = "❌ Incomplete";
     let certLink = "";
     if (course && valid) {
-      status = "&#x2705; Complete";
+      status = "✅ Complete";
       if (course.certificateLink && course.certificateLink !== "#") {
         certLink = `<br><a href="${course.certificateLink}" target="_blank">View Certificate</a>`;
       }
     }
+
+    // Set data-status for filtering
+    div.setAttribute("data-status", status.includes("Complete") ? "complete" : "incomplete");
 
     div.innerHTML = `
       <strong>${req.training}</strong><br>
@@ -165,18 +167,22 @@ chrome.storage.local.get(["completedCourses", "userGrade"], (data) => {
   });
 });
 
-
+// Updated filter logic
 document.getElementById("filter-select").addEventListener("change", function () {
-  const selected = this.value;
+  const selected = this.value; // all | complete | incomplete | expiring
   const items = document.querySelectorAll(".course-item");
   items.forEach(item => {
-    item.style.display = "block";
-    if (selected === "done" && !item.innerHTML.includes("&#x2705;")) {
-      item.style.display = "none";
-    } else if (selected === "notdone" && !item.innerHTML.includes("&#x274C;")) {
-      item.style.display = "none";
+    let show = true;
+    const status = item.getAttribute("data-status"); // complete | incomplete
+
+    if (selected === "complete" && status !== "complete") {
+      show = false;
+    } else if (selected === "incomplete" && status !== "incomplete") {
+      show = false;
     } else if (selected === "expiring" && !item.classList.contains("expiring")) {
-      item.style.display = "none";
+      show = false;
     }
+
+    item.style.display = show ? "block" : "none";
   });
 });
