@@ -1,69 +1,63 @@
 const trainingRequirements = [
   {
-    "training": "Level I AT Awareness Training",
-    "frequency": "CY",
-    "grade": "All",
-    "course_code": "JATLV10000"
+    training: "Level I AT Awareness Training",
+    frequency: "CY",
+    grade: "All",
+    course_code: "JATLV10000"
   },
   {
-    "training": "Annual Cyber Awareness/ PII Training",
-    "frequency": "FY",
-    "grade": "All",
-    "course_code": "CYBERM0000"
+    training: "Annual Cyber Awareness/ PII Training",
+    frequency: "FY",
+    grade: "All",
+    course_code: "CYBERM0000"
   },
   {
-    "training": "Risk Management",
-    "frequency": "Every 2 CY",
-    "grade": "All",
-    "course_code": "SDRMGTSUL0"
+    training: "Marine Corps Operations Security - Quantico Specific (OPSEC)",
+    frequency: "CY",
+    grade: "All",
+    course_code: "MCBQINTRO0"
   },
   {
-    "training": "Marine Corps Operations Security (OPSEC)",
-    "frequency": "CY",
-    "grade": "All",
-    "course_code": "MCBQINTRO0"
+    training: "Intel Oversight",
+    frequency: "Every 12 Months",
+    grade: "All",
+    course_code: "INTELAO001"
   },
   {
-    "training": "Intel Oversight",
-    "frequency": "Every 12 Months",
-    "grade": "All",
-    "course_code": "INTELAO001"
+    training: "Risk Management",
+    frequency: "Every 2 CY",
+    grade: "E1-E3",
+    course_code: "SDRMGTE130"
   },
   {
-    "training": "Risk Management",
-    "frequency": "Every 2 CY",
-    "grade": "E1-E3",
-    "course_code": "SDRMGTE130"
+    training: "Risk Management",
+    frequency: "Every 2 CY",
+    grade: "(E4-E6, WO1-CWO2, O1-O3)",
+    course_code: "SDRMGTSUL0"
   },
   {
-    "training": "Risk Management",
-    "frequency": "Every 2 CY",
-    "grade": "(E4-E6, WO1-CWO2, O1-O3)",
-    "course_code": "SDRMGTSUL0"
+    training: "Risk Management",
+    frequency: "Every 2 CY",
+    grade: "(E7-E9, CWO3-CWO5, O4-O10)",
+    course_code: "SDRMGTSEN0"
   },
   {
-    "training": "Risk Management",
-    "frequency": "Every 2 CY",
-    "grade": "(E7-E9, CWO3-CWO5, O4-O10)",
-    "course_code": "SDRMGTSEN0"
+    training: "Counter Intel",
+    frequency: "Every 2 FY",
+    grade: "All",
+    course_code: "CI11616000"
   },
   {
-    "training": "Counter Intel",
-    "frequency": "Every 2 FY",
-    "grade": "All",
-    "course_code": "CI11616000"
+    training: "Supervisor Safety",
+    frequency: "Every 12 Months",
+    grade: "All",
+    course_code: "SUPSFTY001"
   },
   {
-    "training": "Supervisor Safety",
-    "frequency": "Every 12 Months",
-    "grade": "All",
-    "course_code": "SUPSFTY001"
-  },
-  {
-    "training": "Records Management",
-    "frequency": "FY",
-    "grade": "All",
-    "course_code": "M01RMT0700"
+    training: "Records Management",
+    frequency: "FY",
+    grade: "All",
+    course_code: "M01RMT0700"
   }
 ];
 
@@ -81,7 +75,11 @@ function calculateDeadline(frequency, completedDate) {
     if (frequency === "CY") {
       deadline = new Date(now.getFullYear(), 11, 31);
     } else if (frequency === "FY") {
-      deadline = new Date(now.getMonth() < 9 ? now.getFullYear() : now.getFullYear() + 1, 8, 30);
+      deadline = new Date(
+        now.getMonth() < 9 ? now.getFullYear() : now.getFullYear() + 1,
+        8,
+        30
+      );
     } else if (frequency === "Every 12 Months") {
       // No completion date yet; just show a placeholder future date so "Incomplete" items have some deadline.
       deadline = new Date(now);
@@ -89,7 +87,11 @@ function calculateDeadline(frequency, completedDate) {
     } else if (frequency === "Every 2 CY") {
       deadline = new Date(now.getFullYear(), 11, 31);
     } else if (frequency === "Every 2 FY") {
-      deadline = new Date(now.getMonth() < 9 ? now.getFullYear() + 1 : now.getFullYear() + 2, 8, 30);
+      deadline = new Date(
+        now.getMonth() < 9 ? now.getFullYear() + 1 : now.getFullYear() + 2,
+        8,
+        30
+      );
     }
     return deadline;
   }
@@ -97,7 +99,10 @@ function calculateDeadline(frequency, completedDate) {
   if (frequency === "CY") {
     deadline = new Date(completedDate.getFullYear(), 11, 31);
   } else if (frequency === "FY") {
-    const fy = completedDate.getMonth() >= 9 ? completedDate.getFullYear() + 1 : completedDate.getFullYear();
+    const fy =
+      completedDate.getMonth() >= 9
+        ? completedDate.getFullYear() + 1
+        : completedDate.getFullYear();
     deadline = new Date(fy, 8, 30);
   } else if (frequency === "Every 12 Months") {
     deadline = new Date(completedDate);
@@ -105,7 +110,10 @@ function calculateDeadline(frequency, completedDate) {
   } else if (frequency === "Every 2 CY") {
     deadline = new Date(completedDate.getFullYear() + 2, 11, 31);
   } else if (frequency === "Every 2 FY") {
-    const fy = completedDate.getMonth() >= 9 ? completedDate.getFullYear() + 1 : completedDate.getFullYear();
+    const fy =
+      completedDate.getMonth() >= 9
+        ? completedDate.getFullYear() + 1
+        : completedDate.getFullYear();
     deadline = new Date(fy + 1, 8, 30);
   }
 
@@ -120,16 +128,72 @@ function isCourseValid(course, frequency) {
   return deadline >= new Date();
 }
 
+/**
+ * Normalize whatever MarineNet puts in the "Grade" field:
+ * "E-4", "E 4", "e-4" -> "E4"
+ * "WO-1" -> "WO1", "CWO-3" -> "CWO3", etc.
+ */
+function normalizeGradeText(gradeText) {
+  if (!gradeText) return null;
+
+  let g = gradeText.trim().toUpperCase();
+  g = g.replace(/\s+/g, ""); // remove spaces
+  g = g.replace(/-/g, "");   // remove hyphens
+
+  return g; // e.g. "E4", "WO1", "CWO3", "O2"
+}
+
+/**
+ * Check if a user's grade falls into the requirement's grade band.
+ * "All" applies to everyone and is always true.
+ */
+function gradeMatchesRequirement(userGradeRaw, requirementBand) {
+  if (requirementBand === "All") return true;
+
+  const g = normalizeGradeText(userGradeRaw);
+  if (!g) return false;
+
+  const bandE1E3 = ["E1", "E2", "E3"];
+  const bandMid = [
+    "E4", "E5", "E6",
+    "WO1", "CWO2",
+    "O1", "O2", "O3"
+  ];
+  const bandSenior = [
+    "E7", "E8", "E9",
+    "CWO3", "CWO4", "CWO5",
+    "O4", "O5", "O6", "O7", "O8", "O9", "O10"
+  ];
+
+  if (requirementBand === "E1-E3") {
+    return bandE1E3.includes(g);
+  }
+
+  if (requirementBand === "(E4-E6, WO1-CWO2, O1-O3)") {
+    return bandMid.includes(g);
+  }
+
+  if (requirementBand === "(E7-E9, CWO3-CWO5, O4-O10)") {
+    return bandSenior.includes(g);
+  }
+
+  // If we add more band formats in the future, handle them here.
+  return false;
+}
+
 chrome.storage.local.get(["completedCourses", "userGrade"], (data) => {
   const container = document.getElementById("training-status");
   const userGrade = data.userGrade || "N/A";
+  
+
   const completedCourses = data.completedCourses || [];
 
   document.getElementById("user-grade").innerText = "Grade: " + userGrade;
   container.innerHTML = "";
 
   trainingRequirements.forEach(req => {
-    if (req.grade !== "All" && req.grade !== userGrade) return;
+    // NEW: use grade band matching; "All" still applies to everyone.
+    if (!gradeMatchesRequirement(userGrade, req.grade)) return;
 
     const course = completedCourses.find(c => c.code === req.course_code);
     const completedDate = course ? parseDate(course.date) : null;
@@ -139,7 +203,10 @@ chrome.storage.local.get(["completedCourses", "userGrade"], (data) => {
     const div = document.createElement("div");
     div.className = "course-item";
 
-    const daysUntilDeadline = deadline ? Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24)) : null;
+    const daysUntilDeadline = deadline
+      ? Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24))
+      : null;
+
     if (daysUntilDeadline !== null && daysUntilDeadline <= 45 && valid) {
       div.classList.add("expiring");
     }
@@ -158,11 +225,14 @@ chrome.storage.local.get(["completedCourses", "userGrade"], (data) => {
 
     div.innerHTML = `
       <strong>${req.training}</strong><br>
+      <span style="font-size:12px; color:#555;">Course Code: ${req.course_code}</span><br>
       Status: ${status}<br>
       Deadline: ${deadline ? deadline.toLocaleDateString() : "N/A"}<br>
       ${course ? `Last Completed: ${course.date}` : ""}
       ${certLink}
     `;
+
+
     container.appendChild(div);
   });
 });
